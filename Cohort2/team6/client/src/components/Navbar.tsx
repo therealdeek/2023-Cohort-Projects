@@ -13,17 +13,19 @@ import {
   MenuItem,
   MenuDivider,
   useDisclosure,
-  useColorModeValue,
   Stack,
   Text,
 } from "@chakra-ui/react";
 import { HamburgerIcon, CloseIcon } from "@chakra-ui/icons";
 import { v4 as uuidv4 } from "uuid";
 
+import { Link as ReactRouterLink } from "react-router-dom";
+import { Link as ChakraLink, LinkProps } from "@chakra-ui/react";
+
 const links = {
   notLoggedIn: [
-    { name: "Login", url: "" },
-    { name: "Sign Up", url: "" },
+    { name: "Login", url: "/login" },
+    { name: "Sign Up", url: "/sign-up" },
   ],
   loggedIn: [
     { name: "Events", url: "" },
@@ -39,9 +41,10 @@ const NavLink = ({ children }: { children: ReactNode }) => (
     rounded={"md"}
     _hover={{
       textDecoration: "none",
-      bg: useColorModeValue("gray.200", "gray.700"),
+      bg: "#149a9a",
+      textColor: "white",
     }}
-    href={"#"}
+    href={"/login"}
   >
     {children}
   </Link>
@@ -49,7 +52,7 @@ const NavLink = ({ children }: { children: ReactNode }) => (
 
 export default function Simple() {
   const { isOpen, onOpen, onClose } = useDisclosure();
-  const [isLoggedIn, setIsLoggedIn] = useState<boolean>(true);
+  const [isLoggedIn, setIsLoggedIn] = useState<boolean>(false);
 
   const handleLogout = () => {
     setIsLoggedIn(false);
@@ -76,7 +79,7 @@ export default function Simple() {
             w={{ md: "100%" }}
             justifyContent={{ md: "space-between" }}
           >
-            <Text as="h1" color="customScheme.darkBlue">
+            <Text as="h1" color="teal">
               Eventli
             </Text>
             <HStack
@@ -85,8 +88,24 @@ export default function Simple() {
               spacing={4}
               display={{ base: "none", md: "flex" }}
             >
+              {/* normal size links */}
               {(isLoggedIn ? links.loggedIn : links.notLoggedIn).map((link) => (
-                <NavLink key={uuidv4()}>{link.name}</NavLink>
+                <Link
+                  key={uuidv4()}
+                  textAlign={"center"}
+                  px={2}
+                  py={1}
+                  rounded={"md"}
+                  _hover={{
+                    textDecoration: "none",
+                    bg: "#149a9a",
+                    textColor: "white",
+                  }}
+                  href={link.url}
+
+                >
+                  {link.name}
+                </Link>
               ))}
             </HStack>
           </HStack>
@@ -102,18 +121,42 @@ export default function Simple() {
                   cursor={"pointer"}
                   minW={0}
                 >
-                  <Avatar
-                    size={"sm"}
-                    src={
-                      "https://images.unsplash.com/photo-1493666438817-866a91353ca9?ixlib=rb-0.3.5&q=80&fm=jpg&crop=faces&fit=crop&h=200&w=200&s=b616b2c5b373a80ffc9636ba24f7a4a9"
-                    }
-                  />
+                  <Box position="relative">
+                    <Avatar size={"sm"} src={"https://bit.ly/broken-link"} />
+                  </Box>
                 </MenuButton>
                 <MenuList>
-                  <MenuItem>Account Info</MenuItem>
-                  <MenuItem>Events Attending</MenuItem>
+                  <MenuItem
+                    _hover={{
+                      textDecoration: "none",
+                      bg: "#149a9a",
+                      textColor: "white",
+                    }}
+                  >
+                    Account Info
+                  </MenuItem>
+                  <MenuItem
+                    _hover={{
+                      textDecoration: "none",
+                      bg: "#149a9a",
+                      textColor: "white",
+                    }}
+                  >
+                    <Link as={ReactRouterLink} to="/events-attending">
+                      Events Attending
+                    </Link>
+                  </MenuItem>
                   <MenuDivider />
-                  <MenuItem onClick={handleLogout}>Logout</MenuItem>
+                  <MenuItem
+                    _hover={{
+                      textDecoration: "none",
+                      bg: "#149a9a",
+                      textColor: "white",
+                    }}
+                    onClick={handleLogout}
+                  >
+                    Logout
+                  </MenuItem>
                 </MenuList>
               </Menu>
             </Flex>
@@ -124,7 +167,22 @@ export default function Simple() {
           <Box pb={4} display={{ md: "none" }}>
             <Stack as={"nav"} spacing={4}>
               {(isLoggedIn ? links.loggedIn : links.notLoggedIn).map((link) => (
-                <NavLink key={uuidv4()}>{link.name}</NavLink>
+                <Link
+                  key={uuidv4()}
+                  textAlign={"center"}
+                  px={2}
+                  py={1}
+                  rounded={"md"}
+                  _hover={{
+                    textDecoration: "none",
+                    bg: "#149a9a",
+                    textColor: "white",
+                  }}
+                  href={link.url}
+
+                >
+                  {link.name}
+                </Link>
               ))}
             </Stack>
           </Box>
