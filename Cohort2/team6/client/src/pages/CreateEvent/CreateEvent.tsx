@@ -23,25 +23,24 @@ import { useDispatch, useSelector } from "react-redux";
 import { UserState } from "../../types/User.types";
 import { useEffect, useState } from "react";
 import AlertBar from "../../components/Alert/AlertBar";
+import { RootState } from "../../redux/store";
+import uploadImage from "../../imgur/imgur";
 
 type CreateEventForm = {
   uuid: string;
   title: string;
-  //date: string;
-  //time: string;
   description: string;
-  //price: string;
   address: string;
   city: string;
   state: string;
   zipCode: string;
-  image_url: string;
+  
 };
 
 export default function Login() {
-  const format = (val: string) => `$` + val;
-  const parse = (val: string) => val.replace(/^\$/, "");
-  const [price, setPrice] = useState<string>("1.53");
+  const format = (val: number) => val; // No need to format here
+  const parse = (val: string) => val.replace(/[^0-9.]/g, ""); // Keep only digits and dots
+  const [price, setPrice] = useState<number>(7.00);
 
   const dispatch = useDispatch();
   const [eventCreated, setEventCreated] = useState<boolean>(false);
@@ -49,23 +48,39 @@ export default function Login() {
   const [dateTime, setDateTime] = useState<string>("");
   const [date, setDate] = useState<string>("");
   const [time, setTime] = useState<string>("");
+  // imgur
+  const [imageFile, setImageFile] = useState<File | null>(null);
+  const [imageUrl, setImageUrl] = useState<string>("");
 
-  // ignore the unsafe assignment, unless you can fix it
-  // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-return
+  // imgur image upload func
+  const handleImageUpload = async () => {
+    if (!imageFile) return;
 
-  // will have event.error below once eventsReducer integrated into redux store
-  //const error = useSelector((state: UserState) => state.user.error);
-  const uuid = useSelector((state: UserState) => state.user.uuid);
+    try {
+      const url = await uploadImage(imageFile);
+      console.log(url)
+      setImageUrl(url);
+    } catch (error) {
+      console.error("Image upload failed:", error);
+    }
+  };
+
+  
+  //const uuid = useSelector((state: RootState) => state.root.user.uuid);
 
   const {
     handleSubmit,
     formState: { errors },
     register,
   } = useForm<CreateEventForm>();
-  const onSubmit: SubmitHandler<CreateEventForm> = (data) => {
+  const onSubmit: SubmitHandler<CreateEventForm> = async (data) => {
+    // imgur call
+    //await handleImageUpload();
+    const parsedPrice = parseFloat(price.toString());
+
+    const formData = { ...data, date: date, time: time, price: parsedPrice, imageUrl };
     try {
-      console.log(data);
-      console.log(date, time, price);
+      console.log(formData);
     } catch (err) {
       // unreachable & don't know why. Error will be handled in redux anyways
       console.log("hi, you wont even see this console.log in the console");
@@ -88,7 +103,7 @@ export default function Login() {
     <Stack minH={"80.8vh"} direction={{ base: "column", md: "row" }}>
       <Flex p={8} flex={1} align={"center"} justify={"center"}>
         <Stack spacing={4} w={"full"} maxW={"md"}>
-          <Heading fontSize={"2xl"}>Log In</Heading>
+          <Heading fontSize={"2xl"}>Create Event</Heading>
           <form
             onSubmit={handleSubmit(onSubmit)}
             style={{ display: "flex", flexDirection: "column", gap: "15px" }}
@@ -119,10 +134,13 @@ export default function Login() {
               <FormErrorMessage>{errors.description?.message}</FormErrorMessage>
             </FormControl>
             <FormControl>
-              <FormLabel onClick={() => console.log(price)}>Price</FormLabel>
+              <FormLabel>Price</FormLabel>
               <NumberInput
                 isRequired
-                onChange={(e) => setPrice(parse(e))}
+                onChange={(valueString) => {
+                  const parsedValue = parse(valueString);
+                  setPrice(parsedValue);
+                }}
                 value={format(price)}
                 max={1000}
                 min={1}
@@ -180,6 +198,13 @@ export default function Login() {
               />
               <FormErrorMessage>{errors.zipCode?.message}</FormErrorMessage>
             </FormControl>
+            {/* image upload */}
+            <Input
+              type="file"
+              accept="image/*"
+              onChange={(e) => setImageFile(e.target.files?.[0] || null)}
+            />
+            {imageUrl && <Image src={imageUrl} alt="Uploaded" maxH="300px" />}
             <Divider mt={4} mb={4} />
 
             <Flex direction={"row"} gap={3}>
