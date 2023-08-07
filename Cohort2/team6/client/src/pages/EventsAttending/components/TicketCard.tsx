@@ -70,7 +70,7 @@ export default function TicketCard({
           </Text>{" "}
         </CardBody>
 
-        <CardFooter display={"flex"} flexDirection={"column"}>
+        <CardFooter display={"flex"} flexDirection={{base:"column", md:'row'}} justifyContent={{md:'space-between'}} alignItems={{md:'center'}}>
           <Text fontWeight={600} fontSize={"1.4rem"}>
             {cityState}
           </Text>
