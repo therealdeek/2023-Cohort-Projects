@@ -5,7 +5,6 @@ export interface User {
 }
 
 export interface UserState {
-  [x: string]: any;
   currentUser: User | null;
   loading: boolean;
   error: string | null;

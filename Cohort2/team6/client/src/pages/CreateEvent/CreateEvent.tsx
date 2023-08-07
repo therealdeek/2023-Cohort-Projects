@@ -7,7 +7,6 @@ import {
   Input,
   Stack,
   Image,
-  Divider,
   FormErrorMessage,
   Textarea,
   NumberInput,
@@ -17,17 +16,14 @@ import {
   NumberIncrementStepper,
 } from "@chakra-ui/react";
 import { useForm, SubmitHandler } from "react-hook-form";
-
-import { useDispatch, useSelector } from "react-redux";
-
-import { UserState } from "../../types/User.types";
+import {  useSelector } from "react-redux";
 import { useEffect, useState } from "react";
 import AlertBar from "../../components/Alert/AlertBar";
-import { RootState } from "../../redux/store";
 import uploadImage from "../../imgur/imgur";
 import { API_URL } from "../../constants/api-constants";
 import { EventTypes } from "../../types/Event.types";
 import axios, { AxiosResponse } from "axios";
+import { RootState } from "../../redux/RootState.types";
 
 type CreateEventForm = {
   uuid: string;
@@ -41,12 +37,15 @@ type CreateEventForm = {
 };
 
 export default function Login() {
+  const uuid = useSelector((state: RootState) => state.root.user.currentUser.uuid);
+
+  // event controls
+  const [eventCreated, setEventCreated] = useState<boolean>(false);
+  const [error, setError] = useState<string | null>(null)
+  // price controls
   const format = (val: number) => val; // No need to format here
   const parse = (val: string) => val.replace(/[^0-9.]/g, ""); // Keep only digits and dots
-  const [price, setPrice] = useState<number>(7.00);
-
-  const dispatch = useDispatch();
-  const [eventCreated, setEventCreated] = useState<boolean>(false);
+  const [price, setPrice] = useState<number>(7.00); 
   // format of date and time "2023-07-29T16:00"
   const [dateTime, setDateTime] = useState<string>("");
   const [date, setDate] = useState<string>("");
@@ -54,14 +53,12 @@ export default function Login() {
   // imgur
   const [imageFile, setImageFile] = useState<File | null>(null);
   const [imageUrl, setImageUrl] = useState<string>("");
-
   // imgur image upload func
   const handleImageUpload = async () => {
     if (!imageFile) return;
-
     try {
       const url = await uploadImage(imageFile);
-      console.log(url)
+      //console.log(url)
       setImageUrl(url);
     } catch (error) {
       console.error("Image upload failed:", error);
@@ -78,19 +75,18 @@ export default function Login() {
   } = useForm<CreateEventForm>();
   const onSubmit: SubmitHandler<CreateEventForm> = async (data) => {
     // imgur call
-    //await handleImageUpload();
+    await handleImageUpload();
     const parsedPrice = parseFloat(price.toString());
 
-    const formData = { ...data, date: date, time: time, price: parsedPrice, imageUrl };
+    const formData = { ...data, date: date, time: time, price: parsedPrice, imageUrl, user_id: uuid };
     try {
-      const response: AxiosResponse<EventTypes> = await axios.post(`${API_URL}/api/events/create`, formData);        
-      console.log('Response:', response.data);
+      //const response: AxiosResponse<EventTypes> = await axios.post(`${API_URL}/api/events/create`, formData);        
+      //console.log('Response:', response.data);
+      console.log(formData)
       setEventCreated(true);
       // redirect to events or event page
       
     } catch (err) {
-      // unreachable & don't know why. Error will be handled in redux anyways
-      console.log("hi, you wont even see this console.log in the console");
       console.error(err);
     }
   };
@@ -118,10 +114,10 @@ export default function Login() {
             {eventCreated && (
               <AlertBar message="Login Successful" status="success" />
             )}
-            {/* {error && (
+            {error ? (
               // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-              <AlertBar message={error} status="error" />
-            )} */}
+              <AlertBar message={error} status="error" /> 
+            ): ""}ß
             <FormControl isInvalid={!!errors.title}>
               <FormLabel>Title</FormLabel>
               <Input
@@ -211,8 +207,7 @@ export default function Login() {
               accept="image/*"
               onChange={(e) => setImageFile(e.target.files?.[0] || null)}
             />
-            {imageUrl && <Image src={imageUrl} alt="Uploaded" maxH="300px" />}
-            <Divider mt={4} mb={4} />
+            
 
             <Flex direction={"row"} gap={3}>
               <Button

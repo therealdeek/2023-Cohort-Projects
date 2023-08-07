@@ -26,7 +26,8 @@ import {
 import { User, UserState } from "../../types/User.types";
 import { useEffect, useState } from "react";
 import AlertBar from "../../components/Alert/AlertBar";
-import { AppDispatch, RootState } from "../../redux/store";
+import { AppDispatch } from "../../redux/store";
+import { RootState } from "../../redux/RootState.types";
 
 type LoginForm = {
   username: string;
@@ -53,10 +54,7 @@ export default function Login() {
         console.log(res)
         setLoginSuccessful(true)
       }
-        
-      
-      
-      
+
       // const jwtToken = getJwtToken();
       // // Check if the token exists before dispatching the action
       // if (jwtToken) {
