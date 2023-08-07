@@ -37,7 +37,8 @@ type CreateEventForm = {
 };
 
 export default function Login() {
-  const uuid = useSelector((state: RootState) => state.root.user.currentUser.uuid);
+  // must be logged in to utilize
+  //const uuid = useSelector((state: RootState) => state.root.user.currentUser.uuid);
 
   // event controls
   const [eventCreated, setEventCreated] = useState<boolean>(false);
@@ -66,8 +67,6 @@ export default function Login() {
   };
 
   
-  //const uuid = useSelector((state: RootState) => state.root.user.uuid);
-
   const {
     handleSubmit,
     formState: { errors },
@@ -102,6 +101,12 @@ export default function Login() {
     splitDateTime(dateTime);
   }, [dateTime]);
 
+  // useEffect, detect logged in status
+  // useEffect(()=> {
+  //   if(!uuid){
+  //     window.location.href = "/login";
+  //   }
+  // })
   return (
     <Stack minH={"80.8vh"} direction={{ base: "column", md: "row" }}>
       <Flex p={8} flex={1} align={"center"} justify={"center"}>

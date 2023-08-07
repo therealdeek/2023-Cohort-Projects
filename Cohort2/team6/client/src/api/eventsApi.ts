@@ -1,8 +1,6 @@
 import axios, { AxiosResponse } from "axios";
 import { EventTypes } from "../types/Event.types";
 import { API_URL } from "../constants/api-constants";
-import { useSelector } from "react-redux";
-import { RootState } from "../redux/store";
 
 const GET_EVENTS_API_URL = `${API_URL}/api/events/upcoming`;
 const GET_EVENTS_ATTENDING_API_URL = `${API_URL}/api/events/attending/`;
