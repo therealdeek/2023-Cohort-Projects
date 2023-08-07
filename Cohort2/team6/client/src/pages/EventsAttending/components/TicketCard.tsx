@@ -47,7 +47,7 @@ export default function TicketCard({
     >
       <Image
         objectFit="cover"
-        maxW={{ base: "100%", sm: "200px" ,md:'350px', lg: '450px' }}
+        maxW={{ base: "40%" }}
         src={image_url}
         alt="Caffe Latte"
       />
