@@ -47,12 +47,12 @@ export default function TicketCard({
     >
       <Image
         objectFit="cover"
-        maxW={{ base: "100%", sm: "200px" }}
+        maxW={{ base: "100%", sm: "200px" ,md:'350px', lg: '450px' }}
         src={image_url}
         alt="Caffe Latte"
       />
 
-      <Stack>
+      <Stack w={'full'}>
         <CardBody>
           <Heading size="md">{title}</Heading>
           <Text

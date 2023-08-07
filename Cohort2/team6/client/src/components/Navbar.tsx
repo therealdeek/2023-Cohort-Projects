@@ -28,7 +28,7 @@ const links = {
   ],
   loggedIn: [
     { name: "Events", url: "" },
-    { name: "Create Event", url: "" },
+    { name: "Create Event", url: "/create-event" },
   ],
 };
 
@@ -63,7 +63,8 @@ export default function Simple() {
             w={{ md: "100%" }}
             justifyContent={{ md: "space-between" }}
           >
-            <Text as="h1" color="teal">
+            <Text as="h1" color="teal" cursor={'pointer'} onClick={() =>   window.location.href = "/"
+}>
               Eventli
             </Text>
             <HStack
@@ -110,7 +111,7 @@ export default function Simple() {
                   </Box>
                 </MenuButton>
                 <MenuList>
-                  <MenuItem
+                  {/* <MenuItem
                     _hover={{
                       textDecoration: "none",
                       bg: "#149a9a",
@@ -118,7 +119,7 @@ export default function Simple() {
                     }}
                   >
                     Account Info
-                  </MenuItem>
+                  </MenuItem> */}
                   <MenuItem
                     _hover={{
                       textDecoration: "none",
