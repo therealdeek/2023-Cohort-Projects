@@ -25,6 +25,9 @@ import { useEffect, useState } from "react";
 import AlertBar from "../../components/Alert/AlertBar";
 import { RootState } from "../../redux/store";
 import uploadImage from "../../imgur/imgur";
+import { API_URL } from "../../constants/api-constants";
+import { EventTypes } from "../../types/Event.types";
+import axios, { AxiosResponse } from "axios";
 
 type CreateEventForm = {
   uuid: string;
@@ -80,7 +83,11 @@ export default function Login() {
 
     const formData = { ...data, date: date, time: time, price: parsedPrice, imageUrl };
     try {
-      console.log(formData);
+      const response: AxiosResponse<EventTypes> = await axios.post(`${API_URL}/api/events/create`, formData);        
+      console.log('Response:', response.data);
+      setEventCreated(true);
+      // redirect to events or event page
+      
     } catch (err) {
       // unreachable & don't know why. Error will be handled in redux anyways
       console.log("hi, you wont even see this console.log in the console");

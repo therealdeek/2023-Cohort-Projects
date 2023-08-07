@@ -37,20 +37,20 @@ export const getEventsAttendingAsync = async (
   }
 };
 
-export const getSpecificEventAsync = async (
-  eventId: string
-): Promise<EventTypes> => {
-  try {
-    const response: AxiosResponse<EventTypes> = await axios.get(
-      // eventId passed through api call on specific event page on initial load
-      GET_EVENT_API_URL + eventId
-    );
-    return response.data;
-  } catch (error) {
-    console.log(error);
-    throw new Error("Failed to fetch events");
-  }
-};
+// export const getSpecificEventAsync = async (
+//   eventId: string
+// ): Promise<EventTypes> => {
+//   try {
+//     const response: AxiosResponse<EventTypes> = await axios.get(
+//       // eventId passed through api call on specific event page on initial load
+//       GET_EVENT_API_URL + eventId
+//     );
+//     return response.data;
+//   } catch (error) {
+//     console.log(error);
+//     throw new Error("Failed to fetch events");
+//   }
+// };
 
 export const createEventAsync = async (
   uuid: string,
