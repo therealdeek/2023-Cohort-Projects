@@ -39,7 +39,7 @@ type CreateEventForm = {
 export default function Login() {
   // must be logged in to utilize
   //const uuid = useSelector((state: RootState) => state.root.user.currentUser.uuid);
-
+  const uuid = "123"
   // event controls
   const [eventCreated, setEventCreated] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null)
@@ -79,9 +79,9 @@ export default function Login() {
 
     const formData = { ...data, date: date, time: time, price: parsedPrice, imageUrl, user_id: uuid };
     try {
-      //const response: AxiosResponse<EventTypes> = await axios.post(`${API_URL}/api/events/create`, formData);        
-      //console.log('Response:', response.data);
-      console.log(formData)
+      const response: AxiosResponse<EventTypes> = await axios.post(`${API_URL}/api/events/create`, formData);        
+      console.log('Response:', response.data);
+      //console.log(formData)
       setEventCreated(true);
       // redirect to events or event page
       
@@ -122,7 +122,7 @@ export default function Login() {
             {error ? (
               // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
               <AlertBar message={error} status="error" /> 
-            ): ""}ß
+            ): ""}
             <FormControl isInvalid={!!errors.title}>
               <FormLabel>Title</FormLabel>
               <Input

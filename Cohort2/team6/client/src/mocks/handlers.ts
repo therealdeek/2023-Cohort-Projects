@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unsafe-assignment */
 import { rest } from 'msw'
 import { API_URL } from '../constants/api-constants'
 
@@ -40,4 +41,29 @@ export const handlers = [
       })
     )
   }),
+  rest.post(`${API_URL}/api/events/create`, (req, res, ctx) => {
+    const { title, description, address, city, state, zipCode, date, time, price, imageUrl, user_id } = req.body as any;
+
+    return res(
+      ctx.delay(1000),
+      ctx.status(200),
+      ctx.json({
+        message: 'event successfully created',
+        eventData: {
+          title,
+          description,
+          address,
+          city,
+          state,
+          zipCode,
+          date,
+          time,
+          price,
+          imageUrl,
+          user_id,
+        },
+      })
+    )
+  }),
+  
 ]
