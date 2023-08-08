@@ -25,6 +25,8 @@ type SignUpForm = {
   username: string;
   password: string;
   confirmPassword: string;
+  firstName: string;
+  lastName: string;
 };
 
 export default function SignUp() {
@@ -32,7 +34,6 @@ export default function SignUp() {
   const dispatch = useDispatch();
   // ignore the unsafe assignment, unless you can fix it
   // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-return
-  
   // causing error
   //const error = useSelector((state: UserState) => state.user.error);
 
@@ -131,10 +132,22 @@ export default function SignUp() {
                 {errors.confirmPassword?.message}
               </FormErrorMessage>
             </FormControl>
-
-            {!isPasswordMatch && (
-              <FormErrorMessage>Passwords do not match.</FormErrorMessage>
+            {!isPasswordMatch && (<FormErrorMessage>Passwords do not match.</FormErrorMessage>
             )}
+            <FormControl id="firstName" isInvalid={!!errors.firstName}>
+              <FormLabel>First Name</FormLabel>
+              <Input
+                {...register("firstName", { required: "First name is required" })}
+              />
+              <FormErrorMessage>{errors.firstName?.message}</FormErrorMessage>
+            </FormControl>
+            <FormControl id="lastName" isInvalid={!!errors.firstName}>
+              <FormLabel>Last Name</FormLabel>
+              <Input
+                {...register("lastName", { required: "Last name is required" })}
+              />
+              <FormErrorMessage>{errors.lastName?.message}</FormErrorMessage>
+            </FormControl>
 
             <Divider mt={4} mb={4} />
 
