@@ -1,10 +1,31 @@
-import { Box, Heading } from "@chakra-ui/react";
+import { Box, Spinner } from "@chakra-ui/react";
 import Carousel from "../Home/components/Carousel/Carousel";
 import EventCardContainer from "../../components/EventCardContainer/EventCardContainer";
 import { EventTypes } from "../../types/Event.types";
+import { useEffect, useState } from "react";
+import { API_URL } from "../../constants/api-constants";
+import axios, { AxiosResponse } from "axios";
 
 export const Home = () => {
   // dummy data until redux store is setup
+  const [events, setEvents] = useState<EventTypes[] | null>(null);
+
+  //get events api call
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response: AxiosResponse<EventTypes[]> = await axios.get<EventTypes[]>(`${API_URL}/api/events`);
+        console.log(response.data);
+        setEvents(response.data.data)
+      } catch (err) {
+        console.error(err);
+      }
+    };
+
+    fetchData(); // Call the async function to fetch data
+
+  }, []);
+
   const dummyData: EventTypes[] = [
     {
       eventId: "1",
@@ -47,9 +68,24 @@ export const Home = () => {
   ];
 
   return (
-    <Box>
-      <Carousel />
-      <EventCardContainer dummyData={dummyData} />
+    <Box h={events? '': '82vh'} display={events? '': 'flex'} justifyContent={events? '': 'center'} alignItems={events? '': 'center'}>
+      {events ? (
+        <>
+          {" "}
+          <Carousel />
+          <EventCardContainer dummyData={events} />
+        </>
+      ) : (
+        <Spinner
+          thickness="4px"
+          speed="0.65s"
+          emptyColor="gray.200"
+          color="blue.500"
+          width="220px"
+          height={'220px'}
+          justifySelf={'center'}
+        />
+      )}
     </Box>
   );
 };
