@@ -20,7 +20,8 @@ import {
 } from "../../redux/reducers/userReducer";
 import { useEffect, useState } from "react";
 import AlertBar from "../../components/Alert/AlertBar";
-import { AppDispatch, RootState } from "../../redux/store";
+import { AppDispatch } from "../../redux/store";
+import { RootState } from "../../redux/RootState.types";
 type SignUpForm = {
   username: string;
   password: string;
@@ -30,10 +31,7 @@ type SignUpForm = {
 export default function SignUp() {
   const [userCreated, setUserCreated] = useState<boolean>(false);
   const dispatch = useDispatch<AppDispatch>();
-  // ignore the unsafe assignment, unless you can fix it
-  // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-return
 
-  // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-return
   const error = useSelector((state: RootState) => state.root.user.error);
 
   const {
