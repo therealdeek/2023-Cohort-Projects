@@ -7,6 +7,7 @@ import Login from "./pages/Login/Login";
 import EventsAttending from "./pages/EventsAttending/EventsAttending";
 import CreateEvent from "./pages/CreateEvent/CreateEvent";
 import ViewEvent from "./pages/ViewEvent/ViewEvent";
+import Events from "./pages/Events/Events";
 
 function App() {
   return (
@@ -15,6 +16,7 @@ function App() {
         <Route index element={<Home />} />
         <Route path="/sign-up" element={<SignUp />} />
         <Route path="/login" element={<Login />} />
+        <Route path="/events" element={<Events />} />
         <Route path="/events-attending" element={<EventsAttending />} />
         <Route path="/create-event" element={<CreateEvent />} />
         <Route path="/event" element={<ViewEvent />} />

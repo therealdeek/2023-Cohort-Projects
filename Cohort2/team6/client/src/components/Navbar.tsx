@@ -1,4 +1,4 @@
-import { ReactNode, useState } from "react";
+import { ReactNode, useEffect, useState } from "react";
 import {
   Box,
   Flex,
@@ -20,6 +20,8 @@ import { HamburgerIcon, CloseIcon } from "@chakra-ui/icons";
 import { v4 as uuidv4 } from "uuid";
 
 import { Link as ReactRouterLink } from "react-router-dom";
+import { useSelector } from "react-redux";
+import { RootState } from "../redux/RootState.types";
 
 const links = {
   notLoggedIn: [
@@ -27,7 +29,7 @@ const links = {
     { name: "Sign Up", url: "/sign-up" },
   ],
   loggedIn: [
-    { name: "Events", url: "" },
+    { name: "Events", url: "/events" },
     { name: "Create Event", url: "/create-event" },
   ],
 };
@@ -37,10 +39,19 @@ const links = {
 export default function Simple() {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const [isLoggedIn, setIsLoggedIn] = useState<boolean>(true);
+  const loggedIn = useSelector((state: RootState) => state.root.user.currentUser);
 
   const handleLogout = () => {
     setIsLoggedIn(false);
   };
+
+  useEffect(()=> {
+    if(loggedIn){
+      setIsLoggedIn(true)
+    }else{
+      setIsLoggedIn(false)
+    }
+  }, [loggedIn])
 
   return (
     <>
