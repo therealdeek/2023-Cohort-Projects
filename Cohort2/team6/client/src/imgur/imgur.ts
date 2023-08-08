@@ -17,7 +17,7 @@ async function uploadImage(imageFile: File): Promise<string> {
     // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
     const data = await response.json();
     // eslint-disable-next-line @typescript-eslint/no-unsafe-return
-    //console.log(data)
+    console.log(data)
     return data.data.link;
   }
   
