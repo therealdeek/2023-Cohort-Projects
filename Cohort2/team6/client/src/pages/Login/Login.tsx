@@ -26,6 +26,7 @@ import {
 import { User, UserState } from "../../types/User.types";
 import { useEffect, useState } from "react";
 import AlertBar from "../../components/Alert/AlertBar";
+import { AppDispatch, RootState } from "../../redux/store";
 
 type LoginForm = {
   username: string;
@@ -33,55 +34,50 @@ type LoginForm = {
 };
 
 export default function Login() {
-  const dispatch = useDispatch();
+  const dispatch = useDispatch<AppDispatch>();
   const [loginSuccessful, setLoginSuccessful] = useState<boolean>(false);
-  // ignore the unsafe assignment, unless you can fix it
   // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-return
-  //const error = useSelector((state: UserState) => state.user.error);
+  const error = useSelector((state: RootState) => state.root.user.error);
 
   const {
     handleSubmit,
     formState: { errors },
     register,
   } = useForm<LoginForm>();
-  const onSubmit: SubmitHandler<LoginForm> = (data) => {
+  const onSubmit: SubmitHandler<LoginForm> = async (data) => {
     try {
-      setFakeCookie();
-      // ignore error below, needs away, if you can fix the typescript error even better - Kurtis
-
       // currently setup to bypass backend communication
-      // await dispatch(loginUserAsyncThunk(data));
-      const jwtToken = getJwtToken();
-
-      // Check if the token exists before dispatching the action
-      if (jwtToken) {
-        setLoginSuccessful(true);
-        // eslint-disable-next-line @typescript-eslint/no-unnecessary-type-assertion
-        const decodedToken = jwt_decode(jwtToken) as User;
-        // Now you can dispatch the action with the correct payload
-        dispatch(
-          loginUser({
-            username: decodedToken.username,
-            uuid: decodedToken.uuid,
-            isLoggedIn: true,
-          })
-        );
+      const res = await dispatch(loginUserAsyncThunk(data));
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+      if(res){
+        console.log(res)
+        setLoginSuccessful(true)
       }
+        
+      
+      
+      
+      // const jwtToken = getJwtToken();
+      // // Check if the token exists before dispatching the action
+      // if (jwtToken) {
+      //   setLoginSuccessful(true);
+      //   // eslint-disable-next-line @typescript-eslint/no-unnecessary-type-assertion
+      //   const decodedToken = jwt_decode(jwtToken) as User;
+      //   // Now you can dispatch the action with the correct payload
+      //   dispatch(
+      //     loginUser({
+      //       username: decodedToken.username,
+      //       uuid: decodedToken.uuid,
+      //       isLoggedIn: true,
+      //     })
+      //   );
+      // }
     } catch (err) {
-      // unreachable & don't know why. Error will be handled in redux anyways
-      console.log("hi, you wont even see this console.log in the console");
+      console.log(error)
+      
     }
   };
-
-  // handling of fake cookie for test configuration purposes
-  const setFakeCookie = () => {
-    const jwtToken =
-      "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6Imt1cnRpcyIsInV1aWQiOiI4MDA4MTM1In0.IxsDynjEBAnZXqlPIPFlPHtLfLfaaW1GbHqJDTIqSBQ";
-
-    // Set the "jwtToken" cookie with the JWT token and an expiration date (e.g., 7 days)
-    Cookies.set("jwtToken", jwtToken, { expires: 7, path: "/" });
-  };
-
+  // used once cookies are enabled through backend
   const getJwtToken = () => {
     const token = Cookies.get("jwtToken");
     return token;
@@ -94,7 +90,7 @@ export default function Login() {
   }, []);
 
   useEffect(() => {
-    if (loginSuccessful) {
+    if (loginSuccessful && !error) {
       // Set a timeout to redirect after 4 seconds
       const timeout = setTimeout(() => {
         window.location.href = "/";
@@ -114,10 +110,10 @@ export default function Login() {
             {loginSuccessful && (
               <AlertBar message="Login Successful" status="success" />
             )}
-            {/* {error && (
+            {error?  (
               // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
               <AlertBar message={error} status="error" />
-            )} */}
+            ):""}
             <FormControl id="username">
               <FormLabel>Username</FormLabel>
               <Input

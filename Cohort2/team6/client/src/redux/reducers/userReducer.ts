@@ -8,12 +8,9 @@ interface UserState {
   error: string | null;
 }
 
-interface Credentials {
+interface RegisterUserData {
   username: string;
   password: string;
-}
-
-interface RegisterUserData extends Credentials {
   firstName: string;
   lastName: string;
 }
@@ -27,14 +24,15 @@ export const registerUserAsyncThunk = createAsyncThunk(
   "user/registerAsync",
   async (credentials: RegisterUserData, thunkAPI) => {
     try {
-      const registeredUser = await registerUserAsync(
+      const response = await registerUserAsync(
         credentials.username,
         credentials.password,
         credentials.firstName,
         credentials.lastName,
       );
       // return whatever we decide on returning TBD
-      return registeredUser;
+      const user: User = response;
+      return user;
     } catch (error) {
       return thunkAPI.rejectWithValue("Registration failed");
     }
@@ -92,12 +90,14 @@ const userSlice = createSlice({
         state.loading = true;
         state.error = null;
       })
-      .addCase(loginUserAsyncThunk.fulfilled, (state) => {
+      .addCase(loginUserAsyncThunk.fulfilled, (state, action) => {
         state.loading = false;
+        state.currentUser = action.payload;
         state.error = null;
       })
       .addCase(loginUserAsyncThunk.rejected, (state, action) => {
         state.loading = false;
+        state.currentUser = null;
         state.error = action.payload as string;
       });
   },
