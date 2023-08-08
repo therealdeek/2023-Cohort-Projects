@@ -85,10 +85,12 @@ export default function EventCard({
           <Flex
             direction="row"
             w={"100%"}
-            alignItems={"flex-end"}
+            alignItems={"center"}
             justifyContent={"space-between"}
+            mt="5"
+            mb="-5"
           >
-            <Text fontWeight={600} fontSize={"1.4rem"}>
+            <Text fontWeight={600} fontSize={{base: '1rem',md:"1.3rem"}}>
               {cityState}
             </Text>
             <a href="www.google.com">

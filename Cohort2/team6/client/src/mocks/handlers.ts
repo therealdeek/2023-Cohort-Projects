@@ -1,6 +1,7 @@
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
 import { rest } from 'msw'
 import { API_URL } from '../constants/api-constants'
+import dummyData from '../pages/EventsAttending/dummydata';
 
 
 
@@ -24,6 +25,15 @@ export const handlers = [
         uuid: 'de1c8818-8ff1-439c-a62a-ce2e22a612af',
         username,
       }))
+  }),
+  rest.get(`${API_URL}/api/events`, (req, res, ctx) => {
+    return res(
+      ctx.delay(1000),
+      ctx.status(200),
+      ctx.json({
+        data: dummyData
+      })
+    )
   }),
   rest.get(`${API_URL}/api/events/:uuid`, (req, res, ctx) => {
     return res(

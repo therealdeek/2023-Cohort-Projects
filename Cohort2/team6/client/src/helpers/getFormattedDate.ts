@@ -1,17 +1,17 @@
 export function getFormattedDate(dateString: string) {
   const months = [
-    "January",
-    "February",
-    "March",
-    "April",
+    "Jan",
+    "Feb",
+    "Mar",
+    "Apr",
     "May",
     "June",
     "July",
-    "August",
-    "September",
-    "October",
-    "November",
-    "December",
+    "Aug",
+    "Sept",
+    "Oct",
+    "Nov",
+    "Dec",
   ];
 
   const [, month, day] = dateString.split("-");
