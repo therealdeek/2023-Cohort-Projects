@@ -26,6 +26,8 @@ export const Home = () => {
 
   }, []);
 
+
+
   const dummyData: EventTypes[] = [
     {
       eventId: "1",
@@ -72,7 +74,7 @@ export const Home = () => {
       {events ? (
         <>
           {" "}
-          <Carousel />
+          <Carousel events={events}/>
           <EventCardContainer dummyData={events} />
         </>
       ) : (
