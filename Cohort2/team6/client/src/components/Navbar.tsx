@@ -20,8 +20,9 @@ import { HamburgerIcon, CloseIcon } from "@chakra-ui/icons";
 import { v4 as uuidv4 } from "uuid";
 
 import { Link as ReactRouterLink } from "react-router-dom";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../redux/RootState.types";
+import { logoutUser } from "../redux/reducers/userReducer";
 
 const links = {
   notLoggedIn: [
@@ -37,12 +38,14 @@ const links = {
 
 
 export default function Simple() {
+  const dispatch = useDispatch();
   const { isOpen, onOpen, onClose } = useDisclosure();
   const [isLoggedIn, setIsLoggedIn] = useState<boolean>(true);
   const loggedIn = useSelector((state: RootState) => state.root.user.currentUser);
 
   const handleLogout = () => {
-    setIsLoggedIn(false);
+    // reset current user to null
+    dispatch(logoutUser());
   };
 
   useEffect(()=> {
