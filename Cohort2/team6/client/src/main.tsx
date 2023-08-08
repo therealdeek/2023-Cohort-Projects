@@ -33,7 +33,7 @@ import { persistor, store } from "./redux/store.ts";
 // }).catch(console.error)
 
 
-//prod use
+// prod use
 ReactDOM.createRoot(document.getElementById("root")!).render(
   <React.StrictMode>
     <Provider store={store}>
