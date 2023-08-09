@@ -4,7 +4,6 @@ import com.dallasdevs.team6.dao.UserDao;
 import com.dallasdevs.team6.entity.UserEntity;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
@@ -18,21 +17,25 @@ public class UserLoginService {
 
     @Value("${jwt.expirationMs}") // Use expiration time from your application.properties or application.yml
     private long jwtExpirationMs;
+    private PasswordEncryptionService passwordEncryptionService;
+    private final UserDao userDao;
 
-    @Autowired
-    private UserDao userDao;
+    public UserLoginService(final PasswordEncryptionService passwordEncryptionService, final UserDao userDao) {
+        this.passwordEncryptionService = passwordEncryptionService;
+        this.userDao = userDao;
+    }
 
     // Method to authenticate the user
-    public UserEntity authenticateUser(String username, String password) {
+    public UserEntity authenticateUser(final String username, final String password) {
         UserEntity userEntity = userDao.findByUsername(username);
-        if (userEntity != null && userEntity.getPassword().equals(password)) {
+        if (userEntity != null && passwordEncryptionService.validatePassword(password, userEntity.getPassword())) {
             return userEntity;
         }
         return null;
     }
 
     // Method to generate JWT
-    public String generateJwtToken(UserEntity userEntity) {
+    public String generateJwtToken(final UserEntity userEntity) {
         String uuid = userEntity.getUuid();
         String username = userEntity.getUsername();
         Date now = new Date();
