@@ -47,12 +47,12 @@ export default function TicketCard({
     >
       <Image
         objectFit="cover"
-        maxW={{ base: "100%", sm: "200px" }}
+        maxW={{ base: "40%" }}
         src={image_url}
         alt="Caffe Latte"
       />
 
-      <Stack>
+      <Stack w={'full'}>
         <CardBody>
           <Heading size="md">{title}</Heading>
           <Text
@@ -70,7 +70,7 @@ export default function TicketCard({
           </Text>{" "}
         </CardBody>
 
-        <CardFooter display={"flex"} flexDirection={"column"}>
+        <CardFooter display={"flex"} flexDirection={{base:"column", md:'row'}} justifyContent={{md:'space-between'}} alignItems={{md:'center'}}>
           <Text fontWeight={600} fontSize={"1.4rem"}>
             {cityState}
           </Text>

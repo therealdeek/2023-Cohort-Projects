@@ -7,7 +7,6 @@ import {
   Input,
   Stack,
   Image,
-  Divider,
   FormErrorMessage,
   Textarea,
   NumberInput,
@@ -17,58 +16,76 @@ import {
   NumberIncrementStepper,
 } from "@chakra-ui/react";
 import { useForm, SubmitHandler } from "react-hook-form";
-
-import { useDispatch, useSelector } from "react-redux";
-
-import { UserState } from "../../types/User.types";
+import {  useSelector } from "react-redux";
 import { useEffect, useState } from "react";
 import AlertBar from "../../components/Alert/AlertBar";
+import uploadImage from "../../imgur/imgur";
+import { API_URL } from "../../constants/api-constants";
+import { EventTypes } from "../../types/Event.types";
+import axios, { AxiosResponse } from "axios";
+import { RootState } from "../../redux/RootState.types";
 
 type CreateEventForm = {
   uuid: string;
   title: string;
-  //date: string;
-  //time: string;
   description: string;
-  //price: string;
   address: string;
   city: string;
   state: string;
   zipCode: string;
-  image_url: string;
+  
 };
 
 export default function Login() {
-  const format = (val: string) => `$` + val;
-  const parse = (val: string) => val.replace(/^\$/, "");
-  const [price, setPrice] = useState<string>("1.53");
-
-  const dispatch = useDispatch();
+  // must be logged in to utilize
+  //const uuid = useSelector((state: RootState) => state.root.user.currentUser.uuid);
+  const uuid = "123"
+  // event controls
   const [eventCreated, setEventCreated] = useState<boolean>(false);
+  const [error, setError] = useState<string | null>(null)
+  // price controls
+  const format = (val: number) => val; // No need to format here
+  const parse = (val: string) => val.replace(/[^0-9.]/g, ""); // Keep only digits and dots
+  const [price, setPrice] = useState<number>(7.00); 
   // format of date and time "2023-07-29T16:00"
   const [dateTime, setDateTime] = useState<string>("");
   const [date, setDate] = useState<string>("");
   const [time, setTime] = useState<string>("");
+  // imgur
+  const [imageFile, setImageFile] = useState<File | null>(null);
+  const [imageUrl, setImageUrl] = useState<string>("");
+  // imgur image upload func
+  const handleImageUpload = async () => {
+    if (!imageFile) return;
+    try {
+      const url = await uploadImage(imageFile);
+      //console.log(url)
+      setImageUrl(url);
+    } catch (error) {
+      console.error("Image upload failed:", error);
+    }
+  };
 
-  // ignore the unsafe assignment, unless you can fix it
-  // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-return
-
-  // will have event.error below once eventsReducer integrated into redux store
-  //const error = useSelector((state: UserState) => state.user.error);
-  const uuid = useSelector((state: UserState) => state.user.uuid);
-
+  
   const {
     handleSubmit,
     formState: { errors },
     register,
   } = useForm<CreateEventForm>();
-  const onSubmit: SubmitHandler<CreateEventForm> = (data) => {
+  const onSubmit: SubmitHandler<CreateEventForm> = async (data) => {
+    // imgur call
+    await handleImageUpload();
+    const parsedPrice = parseFloat(price.toString());
+
+    const formData = { ...data, date: date, time: time, price: parsedPrice, imageUrl, user_id: uuid };
     try {
-      console.log(data);
-      console.log(date, time, price);
+      const response: AxiosResponse<EventTypes> = await axios.post(`${API_URL}/api/events/create`, formData);        
+      console.log('Response:', response.data);
+      //console.log(formData)
+      setEventCreated(true);
+      // redirect to events or event page
+      
     } catch (err) {
-      // unreachable & don't know why. Error will be handled in redux anyways
-      console.log("hi, you wont even see this console.log in the console");
       console.error(err);
     }
   };
@@ -84,11 +101,17 @@ export default function Login() {
     splitDateTime(dateTime);
   }, [dateTime]);
 
+  // useEffect, detect logged in status
+  // useEffect(()=> {
+  //   if(!uuid){
+  //     window.location.href = "/login";
+  //   }
+  // })
   return (
     <Stack minH={"80.8vh"} direction={{ base: "column", md: "row" }}>
       <Flex p={8} flex={1} align={"center"} justify={"center"}>
         <Stack spacing={4} w={"full"} maxW={"md"}>
-          <Heading fontSize={"2xl"}>Log In</Heading>
+          <Heading fontSize={"2xl"}>Create Event</Heading>
           <form
             onSubmit={handleSubmit(onSubmit)}
             style={{ display: "flex", flexDirection: "column", gap: "15px" }}
@@ -96,10 +119,10 @@ export default function Login() {
             {eventCreated && (
               <AlertBar message="Login Successful" status="success" />
             )}
-            {/* {error && (
+            {error ? (
               // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-              <AlertBar message={error} status="error" />
-            )} */}
+              <AlertBar message={error} status="error" /> 
+            ): ""}
             <FormControl isInvalid={!!errors.title}>
               <FormLabel>Title</FormLabel>
               <Input
@@ -119,10 +142,13 @@ export default function Login() {
               <FormErrorMessage>{errors.description?.message}</FormErrorMessage>
             </FormControl>
             <FormControl>
-              <FormLabel onClick={() => console.log(price)}>Price</FormLabel>
+              <FormLabel>Price</FormLabel>
               <NumberInput
                 isRequired
-                onChange={(e) => setPrice(parse(e))}
+                onChange={(valueString) => {
+                  const parsedValue = parse(valueString);
+                  setPrice(parsedValue);
+                }}
                 value={format(price)}
                 max={1000}
                 min={1}
@@ -180,7 +206,13 @@ export default function Login() {
               />
               <FormErrorMessage>{errors.zipCode?.message}</FormErrorMessage>
             </FormControl>
-            <Divider mt={4} mb={4} />
+            {/* image upload */}
+            <Input
+              type="file"
+              accept="image/*"
+              onChange={(e) => setImageFile(e.target.files?.[0] || null)}
+            />
+            
 
             <Flex direction={"row"} gap={3}>
               <Button

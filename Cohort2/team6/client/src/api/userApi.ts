@@ -16,6 +16,8 @@ export const loginUserAsync = async (
     const response = await axios.post(LOGIN_API_URL, { username, password });
     return response.data;
   } catch (error) {
+    console.log(error)
+
     throw new Error("Login failed");
   }
 };
@@ -30,6 +32,8 @@ export const registerUserAsync = async (
     const response = await axios.post(REGISTER_API_URL, { username, password, firstName, lastName });
     return response.data;
   } catch (error) {
+    console.log(error)
+
     throw new Error("Registration failed");
   }
 };
