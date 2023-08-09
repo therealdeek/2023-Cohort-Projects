@@ -12,7 +12,7 @@ public class UserEntity {
     @Column(name="uuid")
     private String uuid;
 
-    @Column(name="email")
+    @Column(name="username")
     private String username;
 
     @Column(name="password")

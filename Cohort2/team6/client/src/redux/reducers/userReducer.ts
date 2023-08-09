@@ -8,8 +8,12 @@ interface UserState {
   error: string | null;
 }
 
-
-
+interface RegisterUserData {
+  username: string;
+  password: string;
+  firstName: string;
+  lastName: string;
+}
 const initialState: UserState = {
   currentUser: null,
   loading: false,
@@ -18,11 +22,13 @@ const initialState: UserState = {
 
 export const registerUserAsyncThunk = createAsyncThunk(
   "user/registerAsync",
-  async (credentials: { username: string; password: string }, thunkAPI) => {
+  async (credentials: RegisterUserData, thunkAPI) => {
     try {
       const response = await registerUserAsync(
         credentials.username,
-        credentials.password
+        credentials.password,
+        credentials.firstName,
+        credentials.lastName,
       );
       // return whatever we decide on returning TBD
       const user: User = response;

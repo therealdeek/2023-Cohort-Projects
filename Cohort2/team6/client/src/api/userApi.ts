@@ -24,10 +24,12 @@ export const loginUserAsync = async (
 
 export const registerUserAsync = async (
   username: string,
-  password: string
+  password: string,
+  firstName: string,
+  lastName: string,
 ): Promise<User> => {
   try {
-    const response = await axios.post(REGISTER_API_URL, { username, password });
+    const response = await axios.post(REGISTER_API_URL, { username, password, firstName, lastName });
     return response.data;
   } catch (error) {
     console.log(error)

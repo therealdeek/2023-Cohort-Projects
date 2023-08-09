@@ -1,15 +1,14 @@
 package com.dallasdevs.team6.json;
 
-import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import org.hibernate.validator.constraints.Length;
 
 public class RegisterUserPost {
 
-    @Email
+
     @NotBlank
     @Length(min=5, max=200)
-    private String email;
+    private String username;
 
     @NotBlank
     @Length(min=5, max=200)
@@ -23,12 +22,13 @@ public class RegisterUserPost {
     @Length(max=200)
     private String lastName;
 
-    public String getEmail() {
-        return email;
+
+    public String getUsername() {
+        return username;
     }
 
-    public void setEmail(final String email) {
-        this.email = email;
+    public void setUsername(final String username) {
+        this.username = username;
     }
 
     public String getPassword() {
