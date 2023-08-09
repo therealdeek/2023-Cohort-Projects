@@ -11,6 +11,7 @@ import {
   FormErrorMessage,
 } from "@chakra-ui/react";
 import { useForm, SubmitHandler } from "react-hook-form";
+import GlitterBg from "./glitterBg.jpg";
 
 // testing for manually setting a jwtToken as the cookie
 import Cookies from "js-cookie";
@@ -50,9 +51,9 @@ export default function Login() {
       // currently setup to bypass backend communication
       const res = await dispatch(loginUserAsyncThunk(data));
       // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-      if(res){
-        console.log(res)
-        setLoginSuccessful(true)
+      if (res) {
+        console.log(res);
+        setLoginSuccessful(true);
       }
 
       // const jwtToken = getJwtToken();
@@ -71,8 +72,7 @@ export default function Login() {
       //   );
       // }
     } catch (err) {
-      console.log(error)
-      
+      console.log(error);
     }
   };
   // used once cookies are enabled through backend
@@ -108,10 +108,12 @@ export default function Login() {
             {loginSuccessful && (
               <AlertBar message="Login Successful" status="success" />
             )}
-            {error?  (
+            {error ? (
               // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
               <AlertBar message={error} status="error" />
-            ):""}
+            ) : (
+              ""
+            )}
             <FormControl id="username">
               <FormLabel>Username</FormLabel>
               <Input
@@ -156,13 +158,7 @@ export default function Login() {
         </Stack>
       </Flex>
       <Flex flex={1}>
-        <Image
-          alt={"Login Image"}
-          objectFit={"cover"}
-          src={
-            "https://images.unsplash.com/photo-1486312338219-ce68d2c6f44d?ixid=MXwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHw%3D&ixlib=rb-1.2.1&auto=format&fit=crop&w=1352&q=80"
-          }
-        />
+        <Image alt={"Login Image"} objectFit={"cover"} src={GlitterBg} />
       </Flex>
     </Stack>
   );
