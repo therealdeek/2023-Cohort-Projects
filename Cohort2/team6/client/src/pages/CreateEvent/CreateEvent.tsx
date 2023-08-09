@@ -16,7 +16,7 @@ import {
   NumberIncrementStepper,
 } from "@chakra-ui/react";
 import { useForm, SubmitHandler } from "react-hook-form";
-import {  useSelector } from "react-redux";
+import { useSelector } from "react-redux";
 import { useEffect, useState } from "react";
 import AlertBar from "../../components/Alert/AlertBar";
 import uploadImage from "../../imgur/imgur";
@@ -24,6 +24,7 @@ import { API_URL } from "../../constants/api-constants";
 import { EventTypes } from "../../types/Event.types";
 import axios, { AxiosResponse } from "axios";
 import { RootState } from "../../redux/RootState.types";
+import createEventBg from "./createEvent.jpg";
 
 type CreateEventForm = {
   uuid: string;
@@ -33,20 +34,19 @@ type CreateEventForm = {
   city: string;
   state: string;
   zipCode: string;
-  
 };
 
 export default function Login() {
   // must be logged in to utilize
   //const uuid = useSelector((state: RootState) => state.root.user.currentUser.uuid);
-  const uuid = "123"
+  const uuid = "123";
   // event controls
   const [eventCreated, setEventCreated] = useState<boolean>(false);
-  const [error, setError] = useState<string | null>(null)
+  const [error, setError] = useState<string | null>(null);
   // price controls
   const format = (val: number) => val; // No need to format here
   const parse = (val: string) => val.replace(/[^0-9.]/g, ""); // Keep only digits and dots
-  const [price, setPrice] = useState<number>(7.00); 
+  const [price, setPrice] = useState<number>(7.0);
   // format of date and time "2023-07-29T16:00"
   const [dateTime, setDateTime] = useState<string>("");
   const [date, setDate] = useState<string>("");
@@ -66,7 +66,6 @@ export default function Login() {
     }
   };
 
-  
   const {
     handleSubmit,
     formState: { errors },
@@ -77,14 +76,23 @@ export default function Login() {
     await handleImageUpload();
     const parsedPrice = parseFloat(price.toString());
 
-    const formData = { ...data, date: date, time: time, price: parsedPrice, imageUrl, user_id: uuid };
+    const formData = {
+      ...data,
+      date: date,
+      time: time,
+      price: parsedPrice,
+      imageUrl,
+      user_id: uuid,
+    };
     try {
-      const response: AxiosResponse<EventTypes> = await axios.post(`${API_URL}/api/events/create`, formData);        
-      console.log('Response:', response.data);
+      const response: AxiosResponse<EventTypes> = await axios.post(
+        `${API_URL}/api/events/create`,
+        formData
+      );
+      console.log("Response:", response.data);
       //console.log(formData)
       setEventCreated(true);
       // redirect to events or event page
-      
     } catch (err) {
       console.error(err);
     }
@@ -121,8 +129,10 @@ export default function Login() {
             )}
             {error ? (
               // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-              <AlertBar message={error} status="error" /> 
-            ): ""}
+              <AlertBar message={error} status="error" />
+            ) : (
+              ""
+            )}
             <FormControl isInvalid={!!errors.title}>
               <FormLabel>Title</FormLabel>
               <Input
@@ -212,7 +222,6 @@ export default function Login() {
               accept="image/*"
               onChange={(e) => setImageFile(e.target.files?.[0] || null)}
             />
-            
 
             <Flex direction={"row"} gap={3}>
               <Button
@@ -240,13 +249,7 @@ export default function Login() {
         </Stack>
       </Flex>
       <Flex flex={1}>
-        <Image
-          alt={"Login Image"}
-          objectFit={"cover"}
-          src={
-            "https://images.unsplash.com/photo-1486312338219-ce68d2c6f44d?ixid=MXwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHw%3D&ixlib=rb-1.2.1&auto=format&fit=crop&w=1352&q=80"
-          }
-        />
+        <Image alt={"Login Image"} objectFit={"cover"} src={createEventBg} />
       </Flex>
     </Stack>
   );
